@@ -1,5 +1,7 @@
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
 body {
     font-family: Arial;
@@ -35,17 +37,24 @@ body {
   .main {  
     display: flex;
     flex-wrap: wrap;
+    min-height: 300px;
   }
   .menu {
     flex: 30%;
-    background-color: #f1f1f1;
-    padding: 20px;
+    background-color: #2e3cbd;
+   
   }
   .canvas {
     flex: 70%;
-    background-color: white;
-    padding: 20px;
+    background-color: rgb(50, 228, 174);
+    
+    
   }
+  .container canvas{ 
+    min-height: 100%;
+    min-width: 100%;
+  }
+  
   .footer {
     padding: 20px;
     text-align: center;
@@ -53,7 +62,7 @@ body {
   }
 
   @media screen and (max-width: 700px) {
-    .menu, .navbar {   
+    .main, .navbar {   
       flex-direction: column;
     }
   }

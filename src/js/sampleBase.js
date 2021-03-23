@@ -4,3 +4,5 @@ export function SampleBase (){
 SampleBase.prototype.getName = function(){
     return this._name;
 };
+
+SampleBase.prototype.createCanvas = function() {};
