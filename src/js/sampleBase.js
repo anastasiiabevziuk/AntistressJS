@@ -6,3 +6,4 @@ SampleBase.prototype.getName = function(){
 };
 
 SampleBase.prototype.createCanvas = function() {};
+SampleBase.prototype.createMenu = function() {};

@@ -8,6 +8,69 @@ export function Sample1 (){
 Sample1.prototype = Object.create(SampleBase.prototype);
 Sample1.prototype.constructor = Sample1;
 
+Sample1.prototype.createMenu = function(div){
+    this.createSliderForRadius(div);
+    this.createButtonForColor(div);
+};
+
+Sample1.prototype.createSliderForRadius = function(div){
+   
+    let slideContainer = document.createElement('div');
+    slideContainer = document.createElement('div');
+    slideContainer.className = "containerForSlider";
+    div.appendChild(slideContainer);
+    this._slider = document.createElement('input');
+    this._slider.type = "range";
+    this._slider.min = "1";
+    this._slider.max = "50";
+    this._slider.value = "10";
+    this._slider.className = "slider";
+    slideContainer.appendChild(this._slider);
+    slideContainer.insertAdjacentHTML('beforebegin', ' <p>Choose radius:</p>');
+    slideContainer.insertAdjacentHTML("beforeend", ' <p>Value: <span id="demo"></span></p>');
+    this.selectRadius();
+};
+
+Sample1.prototype.createButtonForColor = function(div){
+    let butContainer = document.createElement('div');
+    butContainer = document.createElement('div');
+    butContainer.className = "containerForButton";
+    div.appendChild(butContainer);
+
+    this._color = document.createElement('input');
+    this._color.type = "color";
+    this._color.id = "colorCircle";
+    this._color.className = "chooseColor";
+    butContainer.appendChild(this._color);
+
+    this._butColor = document.createElement('button');
+    this._butColor.innerHTML ="Confirm!";
+    this._butColor.className = "buttColor";
+    this._butColor.id = "buttColorClick";
+   //this._butColor.onclick = this.chooseColor;
+    butContainer.appendChild( this._butColor);
+    butContainer.insertAdjacentHTML("afterbegin", ' <p>Choose color:</p>');
+    this.chooseColor();
+};
+
+Sample1.prototype.chooseColor = function(){
+    let but = document.getElementById("buttColorClick");
+    const self = this;
+    but.onclick = function() {
+        self.color = document.getElementById("colorCircle").value;
+        //return this.color;
+    };
+};
+
+
+Sample1.prototype.selectRadius = function(){
+    let output = document.getElementById("demo");
+    output.innerHTML = this._slider.value;
+
+    this._slider.oninput = function() {
+    output.innerHTML = this.value;
+    };
+};
 
 Sample1.prototype.createCanvas = function(div){
     this._canvas = document.createElement('canvas');
@@ -23,7 +86,9 @@ Sample1.prototype.createCanvas = function(div){
     let rect =  this._canvas.parentNode.getBoundingClientRect();
     this._canvas.width = rect.width;
     this._canvas.height = rect.height;
- };
+ }; 
+
+ 
 
  Sample1.prototype.drawCircle = function(x, y, rad, color){
     
@@ -42,7 +107,7 @@ Sample1.prototype.createCanvas = function(div){
         let ob =  this._queue[i]; 
         //let clarity =  (this.maxLengthQueue - counter)/this.maxLengthQueue;
         counter++;
-        this.drawCircle(ob.x, ob.y, 10, 'pink');
+        this.drawCircle(ob.x, ob.y,  this._slider.value, this.color);
     }
  };
 
@@ -83,4 +148,4 @@ Sample1.prototype.deleteCircleOnTim = function() {
      this.drawCircles();
 };
 
-   
+    
