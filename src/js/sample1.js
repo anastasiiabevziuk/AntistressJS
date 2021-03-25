@@ -5,6 +5,7 @@ export function Sample1 (){
     this._queue = [];
     this._delay = 25;
     this._radius = 10;
+    this._radiusTwo = 3;
 }
 Sample1.prototype = Object.create(SampleBase.prototype);
 Sample1.prototype.constructor = Sample1;
@@ -19,17 +20,17 @@ Sample1.prototype.createSliderForRadius = function(div){
     slideContainer.className = "containerForSlider";
     div.appendChild(slideContainer);
     let slider = this.createSlider(slideContainer, 1, 50, this._radius);
-    //this._slider = document.createElement('input');
-    //this._slider.type = "range";
-    //this._slider.min = "1";
-    //this._slider.max = "50";
-   // this._slider.value = "10";
-    //this._slider.className = "slider";
-    //slideContainer.appendChild(this._slider);
-    slideContainer.insertAdjacentHTML('beforebegin', ' <p>Choose radius:</p>');
+    slideContainer.insertAdjacentHTML('beforebegin', ' <p>Choose radius 1:</p>');
     slideContainer.insertAdjacentHTML("beforeend", ' <p>Value: <span id="demo"></span></p>');
-    this.selectRadius(slider);
     
+    let slideContainerTwo = document.createElement('div');
+    slideContainerTwo.className = "containerForSlider";
+    div.appendChild(slideContainerTwo);
+    let sliderTwo = this.createSlider(slideContainerTwo, 1, 50, this._radiusTwo);
+    slideContainerTwo.insertAdjacentHTML('beforebegin', ' <p>Choose radius 2:</p>');
+    slideContainerTwo.insertAdjacentHTML("beforeend", ' <p>Value: <span id="demoTwo"></span></p>');
+
+    this.selectRadius(slider, sliderTwo);
 };
 
 Sample1.prototype.createButtonForColor = function(div){
@@ -54,13 +55,20 @@ Sample1.prototype.chooseColor = function(btn){
 };
 
 
-Sample1.prototype.selectRadius = function(slider){
+Sample1.prototype.selectRadius = function(slider, sliderTwo){
     let output = document.getElementById("demo");
     output.innerHTML = slider.value;
     const self = this;
     slider.oninput = function() {
-    output.innerHTML = this.value;
-    self._radius = this.value;
+        output.innerHTML = this.value;
+        self._radius = this.value;
+    };
+    let outputTwo = document.getElementById("demoTwo");
+    outputTwo.innerHTML = sliderTwo.value;
+    const selfTwo = this;
+    sliderTwo.oninput = function() {
+        outputTwo.innerHTML = this.value;
+        selfTwo._radiusTwo = this.value;
     };
 };
 
@@ -82,10 +90,8 @@ Sample1.prototype.createCanvas = function(div){
 
  
 
- Sample1.prototype.drawCircle = function(x, y, rad, color){
-    
-    
-    //context.globalAlpha = c;
+ Sample1.prototype.drawCircle = function(x, y, rad, color, opacity){
+    this._context.globalAlpha = opacity;
     this._context.fillStyle = color;
     this._context.beginPath();   
     this._context.arc(x, y, rad , 0, 2 * Math.PI, false);
@@ -96,10 +102,12 @@ Sample1.prototype.createCanvas = function(div){
  Sample1.prototype.drawCircles =  function() {
     let counter = 0;
     for(let i = this._queue.length - 1; i >= 0; i--) {
+        let k = i / this._queue.length;
         let ob =  this._queue[i]; 
-        //let clarity =  (this.maxLengthQueue - counter)/this.maxLengthQueue;
+        let opacity = k;
+        let radius =  (this._radius * k + this._radiusTwo * (1 - k) );
         counter++;
-        this.drawCircle(ob.x, ob.y,  this._radius, this.color);
+        this.drawCircle(ob.x, ob.y, radius, this.color, opacity);
     }
  };
 
@@ -139,3 +147,5 @@ Sample1.prototype.deleteCircleOnTim = function() {
      this.cleanCanvas(); 
      this.drawCircles();
 };
+
+    
