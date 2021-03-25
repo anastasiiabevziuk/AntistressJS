@@ -4,6 +4,7 @@ export function Sample1 (){
     this._name = "FIRST";
     this._queue = [];
     this._delay = 25;
+    this._radius = 10;
 }
 Sample1.prototype = Object.create(SampleBase.prototype);
 Sample1.prototype.constructor = Sample1;
@@ -14,61 +15,52 @@ Sample1.prototype.createMenu = function(div){
 };
 
 Sample1.prototype.createSliderForRadius = function(div){
-   
     let slideContainer = document.createElement('div');
-    slideContainer = document.createElement('div');
     slideContainer.className = "containerForSlider";
     div.appendChild(slideContainer);
-    this._slider = document.createElement('input');
-    this._slider.type = "range";
-    this._slider.min = "1";
-    this._slider.max = "50";
-    this._slider.value = "10";
-    this._slider.className = "slider";
-    slideContainer.appendChild(this._slider);
+    let slider = this.createSlider(slideContainer, 1, 50, this._radius);
+    //this._slider = document.createElement('input');
+    //this._slider.type = "range";
+    //this._slider.min = "1";
+    //this._slider.max = "50";
+   // this._slider.value = "10";
+    //this._slider.className = "slider";
+    //slideContainer.appendChild(this._slider);
     slideContainer.insertAdjacentHTML('beforebegin', ' <p>Choose radius:</p>');
     slideContainer.insertAdjacentHTML("beforeend", ' <p>Value: <span id="demo"></span></p>');
-    this.selectRadius();
+    this.selectRadius(slider);
+    
 };
 
 Sample1.prototype.createButtonForColor = function(div){
     let butContainer = document.createElement('div');
-    butContainer = document.createElement('div');
     butContainer.className = "containerForButton";
     div.appendChild(butContainer);
-
     this._color = document.createElement('input');
     this._color.type = "color";
     this._color.id = "colorCircle";
     this._color.className = "chooseColor";
     butContainer.appendChild(this._color);
-
-    this._butColor = document.createElement('button');
-    this._butColor.innerHTML ="Confirm!";
-    this._butColor.className = "buttColor";
-    this._butColor.id = "buttColorClick";
-   //this._butColor.onclick = this.chooseColor;
-    butContainer.appendChild( this._butColor);
     butContainer.insertAdjacentHTML("afterbegin", ' <p>Choose color:</p>');
-    this.chooseColor();
+    let btn = this.createButton(butContainer, "Confirm");
+    this.chooseColor(btn);
 };
 
-Sample1.prototype.chooseColor = function(){
-    let but = document.getElementById("buttColorClick");
+Sample1.prototype.chooseColor = function(btn){
     const self = this;
-    but.onclick = function() {
+    btn.onclick = function() {
         self.color = document.getElementById("colorCircle").value;
-        //return this.color;
     };
 };
 
 
-Sample1.prototype.selectRadius = function(){
+Sample1.prototype.selectRadius = function(slider){
     let output = document.getElementById("demo");
-    output.innerHTML = this._slider.value;
-
-    this._slider.oninput = function() {
+    output.innerHTML = slider.value;
+    const self = this;
+    slider.oninput = function() {
     output.innerHTML = this.value;
+    self._radius = this.value;
     };
 };
 
@@ -107,7 +99,7 @@ Sample1.prototype.createCanvas = function(div){
         let ob =  this._queue[i]; 
         //let clarity =  (this.maxLengthQueue - counter)/this.maxLengthQueue;
         counter++;
-        this.drawCircle(ob.x, ob.y,  this._slider.value, this.color);
+        this.drawCircle(ob.x, ob.y,  this._radius, this.color);
     }
  };
 
@@ -147,5 +139,3 @@ Sample1.prototype.deleteCircleOnTim = function() {
      this.cleanCanvas(); 
      this.drawCircles();
 };
-
-    
