@@ -3,9 +3,12 @@ export function Sample1 (){
     SampleBase.call(this);
     this._name = "FIRST";
     this._queue = [];
-    this._delay = 25;
+    this._delay = 15;
     this._radius = 10;
     this._radiusTwo = 3;
+    this.color = "#800080";
+    this.colorTwo = "#ff00ff";
+    
 }
 Sample1.prototype = Object.create(SampleBase.prototype);
 Sample1.prototype.constructor = Sample1;
@@ -40,17 +43,33 @@ Sample1.prototype.createButtonForColor = function(div){
     this._color = document.createElement('input');
     this._color.type = "color";
     this._color.id = "colorCircle";
+    this._color.value = this.color;
     this._color.className = "chooseColor";
     butContainer.appendChild(this._color);
-    butContainer.insertAdjacentHTML("afterbegin", ' <p>Choose color:</p>');
+    butContainer.insertAdjacentHTML("afterbegin", ' <p>Choose color 1:</p>');
     let btn = this.createButton(butContainer, "Confirm");
-    this.chooseColor(btn);
+    
+    let butContainerTwo = document.createElement('div');
+    butContainerTwo.className = "containerForButton";
+    div.appendChild(butContainerTwo);
+    this._colorTwo = document.createElement('input');
+    this._colorTwo.type = "color";
+    this._colorTwo.id = "colorCircleTwo";
+    this._colorTwo.value = this.colorTwo;
+    this._colorTwo.className = "chooseColor";
+    butContainerTwo.appendChild(this._colorTwo);
+    butContainerTwo.insertAdjacentHTML("afterbegin", ' <p>Choose color 2:</p>');
+    let btnTwo = this.createButton(butContainerTwo, "Confirm");
+    this.chooseColor(btn, btnTwo);
 };
 
-Sample1.prototype.chooseColor = function(btn){
+Sample1.prototype.chooseColor = function(btn, btnTwo){
     const self = this;
     btn.onclick = function() {
         self.color = document.getElementById("colorCircle").value;
+    };
+    btnTwo.onclick = function() {
+        self.colorTwo = document.getElementById("colorCircleTwo").value;
     };
 };
 
@@ -107,7 +126,8 @@ Sample1.prototype.createCanvas = function(div){
         let opacity = k;
         let radius =  (this._radius * k + this._radiusTwo * (1 - k) );
         counter++;
-        this.drawCircle(ob.x, ob.y, radius, this.color, opacity);
+        let color = this.colorBlending(this.color, this.colorTwo, k);
+        this.drawCircle(ob.x, ob.y, radius, color, opacity);
     }
  };
 

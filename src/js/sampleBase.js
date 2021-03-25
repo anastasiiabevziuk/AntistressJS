@@ -31,3 +31,21 @@ SampleBase.prototype.createSlider = function(div, min, max, value){
     return slider;
     
 };
+
+SampleBase.prototype.colorBlending= function(colorOne, colorTwo, k) {
+    let r1 = parseInt(colorOne.slice(1, 3), 16);
+    let g1 = parseInt(colorOne.slice(3, 5), 16);
+    let b1 = parseInt(colorOne.slice(5, 7), 16);
+
+    let r2 = parseInt(colorTwo.slice(1, 3), 16);
+    let g2 = parseInt(colorTwo.slice(3, 5), 16);
+    let b2 = parseInt(colorTwo.slice(5, 7), 16);
+
+    let rb = r1 * k + r2 * (1 - k);
+    let gb = g1 * k + g2 * (1 - k);
+    let bb = b1 * k + b2 * (1 - k);
+
+    let blendedColor = "rgb(" + rb + ", " + gb + ", " + bb + ")";
+
+    return blendedColor;
+};
