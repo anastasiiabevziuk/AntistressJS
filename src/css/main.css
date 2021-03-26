@@ -18,6 +18,7 @@ body {
     background-color: #333;
   }
   .navbar input {
+    font-family : inherit;
     background-color:  #333; 
     border: none;
     margin: 0;
@@ -111,6 +112,7 @@ body {
   }*/
   
   .buttColor {
+    font-family : inherit;
     background-color: white; 
     color: black; 
     border: 3px solid #28f0e6;
