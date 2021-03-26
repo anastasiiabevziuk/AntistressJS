@@ -120,7 +120,8 @@ Sample1.prototype.createCanvas = function(div){
 
  Sample1.prototype.drawCircles =  function() {
     let counter = 0;
-    for(let i = this._queue.length - 1; i >= 0; i--) {
+    //for(let i = this._queue.length - 1; i >= 0; i--) {
+        for(let i = 0; i < this._queue.length; i++) {
         let k = i / this._queue.length;
         let ob =  this._queue[i]; 
         let opacity = k;
