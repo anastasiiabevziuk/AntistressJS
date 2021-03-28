@@ -3,11 +3,14 @@ export function Sample1 (){
     SampleBase.call(this);
     this._name = "FIRST";
     this._queue = [];
-    this._delay = 15;
+    this._delay = 10;
     this._radius = 10;
     this._radiusTwo = 3;
+    this._maxLength = 15;
     this.color = "#800080";
     this.colorTwo = "#ff00ff";
+
+    this._currentDate = new Date();
     
 }
 Sample1.prototype = Object.create(SampleBase.prototype);
@@ -15,7 +18,27 @@ Sample1.prototype.constructor = Sample1;
 
 Sample1.prototype.createMenu = function(div){
     this.createSliderForRadius(div);
+    this.createSliderForLength(div);
+    this.createRainbow(div);
     this.createButtonForColor(div);
+   
+};
+Sample1.prototype.createRainbow = function(div){
+    let chboxContainer = document.createElement('div');
+    chboxContainer.className = "containerForChbox";
+    div.appendChild(chboxContainer);
+    let chbox = this.createCheckbox(chboxContainer, "Rainbow");
+    chboxContainer.insertAdjacentHTML("beforeend", ' <label>"Rainbow"</label>');
+    this.drawRainbow(chbox);
+};
+
+Sample1.prototype.drawRainbow = function(chbox) {
+    const self = this;
+    chbox.onchange = function() {
+        document.getElementById("btn1").disabled = true;
+        document.getElementById("btn2").disabled = true;
+    
+    };
 };
 
 Sample1.prototype.createSliderForRadius = function(div){
@@ -35,6 +58,29 @@ Sample1.prototype.createSliderForRadius = function(div){
 
     this.selectRadius(slider, sliderTwo);
 };
+Sample1.prototype.createSliderForLength = function(div){
+    let slideContainerLength = document.createElement('div');
+    slideContainerLength.className = "containerForSlider";
+    div.appendChild(slideContainerLength);
+    let sliderLength = this.createSlider(slideContainerLength, 1, 100, this._maxLength);
+    slideContainerLength.insertAdjacentHTML('beforebegin', ' <p>Choose Max Length:</p>');
+    slideContainerLength.insertAdjacentHTML("beforeend", ' <p>Value: <span id="demoLegth"></span></p>');
+    
+
+    this.selectMaxLength(sliderLength);
+};
+
+
+Sample1.prototype.selectMaxLength = function(slider){
+    let output = document.getElementById("demoLegth");
+    output.innerHTML = slider.value;
+    const self = this;
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+        self._maxLength = this.value;
+    };
+    
+};
 
 Sample1.prototype.createButtonForColor = function(div){
     let butContainer = document.createElement('div');
@@ -47,7 +93,7 @@ Sample1.prototype.createButtonForColor = function(div){
     this._color.className = "chooseColor";
     butContainer.appendChild(this._color);
     butContainer.insertAdjacentHTML("afterbegin", ' <p>Choose color 1:</p>');
-    let btn = this.createButton(butContainer, "Confirm");
+    let btn = this.createButton(butContainer, "Confirm", "btn1");
     
     let butContainerTwo = document.createElement('div');
     butContainerTwo.className = "containerForButton";
@@ -59,7 +105,7 @@ Sample1.prototype.createButtonForColor = function(div){
     this._colorTwo.className = "chooseColor";
     butContainerTwo.appendChild(this._colorTwo);
     butContainerTwo.insertAdjacentHTML("afterbegin", ' <p>Choose color 2:</p>');
-    let btnTwo = this.createButton(butContainerTwo, "Confirm");
+    let btnTwo = this.createButton(butContainerTwo, "Confirm", "btn2");
     this.chooseColor(btn, btnTwo);
 };
 
@@ -98,15 +144,18 @@ Sample1.prototype.createCanvas = function(div){
     //this._canvas.style.width ='100%';
    
     div.appendChild(this._canvas);
-
     this._context = this._canvas.getContext("2d");
     this.initCanvasEvents();
-
     let rect =  this._canvas.parentNode.getBoundingClientRect();
     this._canvas.width = rect.width;
     this._canvas.height = rect.height;
  }; 
 
+ Sample1.prototype.resizeCanvas = function() {
+    let rect =  this._canvas.parentNode.getBoundingClientRect();
+    this._canvas.width = rect.width;
+    this._canvas.height = rect.height;
+ };
  
 
  Sample1.prototype.drawCircle = function(x, y, rad, color, opacity){
@@ -122,19 +171,23 @@ Sample1.prototype.createCanvas = function(div){
     let counter = 0;
     //for(let i = this._queue.length - 1; i >= 0; i--) {
         for(let i = 0; i < this._queue.length; i++) {
-        let k = i / this._queue.length;
-        let ob =  this._queue[i]; 
-        let opacity = k;
-        let radius =  (this._radius * k + this._radiusTwo * (1 - k) );
-        counter++;
-        let color = this.colorBlending(this.color, this.colorTwo, k);
-        this.drawCircle(ob.x, ob.y, radius, color, opacity);
-    }
+            let k =(this._queue.length ==1) ? 1 : i / (this._queue.length - 1);
+            let ob =  this._queue[i];
+            let opacity = k;
+            let radius =  (this._radius * k + this._radiusTwo * (1 - k) );
+            counter++;
+            let color = this.colorBlending(this.color, this.colorTwo, k);
+            this.drawCircle(ob.x, ob.y, radius, color, opacity);
+        }
  };
 
  Sample1.prototype.initCanvasEvents = function(){
     this._canvas.onmousemove = e => this.onMouseMove(e);
-    setInterval(()=>{this.deleteCircleOnTim();}, this._delay);
+    setInterval(()=>{
+        this._prevDate = this._currentDate;
+        this._currentDate = new Date();
+        this.deleteCircleOnTim(this._currentDate - this._prevDate);
+    }, this._delay );
  };
 
  Sample1.prototype.onMouseMove = function(e){
@@ -145,12 +198,16 @@ Sample1.prototype.createCanvas = function(div){
     this.drawCircles();
  };
 
+ Sample1.prototype.onResize = function(e) {
+    this.resizeCanvas();
+ };
+
  Sample1.prototype.cleanCanvas = function(){
     this._context.clearRect(0, 0, this._canvas.width, this._canvas.height);
  };
 
  Sample1.prototype.addCoordToQueue =  function(a, b){
-    if(this._queue.length > this.maxLengthQueue){
+    if(this._queue.length > this._maxLength){
        this._queue.splice(0, 1);
        this._queue.push({x: a, y: b});
         
@@ -161,10 +218,17 @@ Sample1.prototype.createCanvas = function(div){
     //this.createCircles();
 };
 
-Sample1.prototype.deleteCircleOnTim = function() {
-    if(this._queue.length > 1){
-        this._queue.splice(0, 1);
-     } 
+Sample1.prototype.deleteCircleOnTim = function(t) {
+    let num = Math.round(t/this._delay);
+    if(this._queue.length > 1) {
+        if(this._queue.length > num + 1) {
+            this._queue.splice(0, num);
+        }
+        else {
+            this._queue.splice(0, this._queue.length - 1);
+         } 
+    }
+   
      this.cleanCanvas(); 
      this.drawCircles();
 };

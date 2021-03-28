@@ -19,6 +19,17 @@ SampleBase.prototype.createButton = function(div, name, id){
     div.appendChild(btn);
     return btn;
 };
+SampleBase.prototype.createCheckbox = function(div, name, id){
+    let chbox = document.createElement('input');
+    chbox.type = "checkbox";
+    chbox.value = name;
+    chbox.className = "checkmark";
+    if(id != undefined) {
+        chbox.id = id;
+    }
+    div.appendChild(chbox);
+    return chbox;
+};
 
 SampleBase.prototype.createSlider = function(div, min, max, value){
     let slider = document.createElement('input');
@@ -49,3 +60,5 @@ SampleBase.prototype.colorBlending= function(colorOne, colorTwo, k) {
 
     return blendedColor;
 };
+
+//SampleBase.prototype.onResize = function() {};
