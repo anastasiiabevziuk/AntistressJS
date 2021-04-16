@@ -9,6 +9,7 @@ SampleBase.prototype.createCanvas = function(div) {};
 SampleBase.prototype.createMenu = function(div) {};
 
 
+
 SampleBase.prototype.createButton = function(div, name, id){
     let btn = document.createElement('button');
     btn.innerHTML = name;

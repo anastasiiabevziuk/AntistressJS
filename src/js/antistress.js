@@ -21,6 +21,7 @@ Antistress.prototype.addSample = function(sample) {
         self._currentSample = sample;
         sample.createCanvas(self._divCanvas);
         sample.createMenu(self._divContainerMenu);
+        
     };
     this._divMenu.appendChild(button);
     //init();

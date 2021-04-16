@@ -56,9 +56,22 @@ body {
     
     
   }
-  .container canvas{ 
-    min-height: 100%;
-    min-width: 100%;
+
+
+  .container { 
+    position:relative;
+
+    /*TODO: make relative*/
+    height: 500px;
+  }
+
+  #canvasOne{
+    position:absolute;
+    z-index: 0;
+  }
+  #canvasTwo{
+    position:absolute;
+    z-index: 1;
   }
   
   .footer {
