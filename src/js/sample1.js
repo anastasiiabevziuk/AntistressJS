@@ -11,6 +11,10 @@ export function Sample1 (){
     this.colorTwo = "#ff00ff";
 
     this._currentDate = new Date();
+
+    this._rainbowDt = 0;
+
+    this._rainbowTim = null;
     
 }
 Sample1.prototype = Object.create(SampleBase.prototype);
@@ -35,9 +39,32 @@ Sample1.prototype.createRainbow = function(div){
 Sample1.prototype.drawRainbow = function(chbox) {
     const self = this;
     chbox.onchange = function() {
-        document.getElementById("btn1").disabled = true;
-        document.getElementById("btn2").disabled = true;
-    
+
+
+        self._isRainbow = !self._isRainbow;
+        if(document.getElementById("btn1").disabled){
+            document.getElementById("btn1").disabled = false;
+            document.getElementById("btn2").disabled = false;
+            document.getElementById("colorCircle").disabled = false;
+            document.getElementById("colorCircleTwo").disabled = false;
+
+        }else{
+            document.getElementById("btn1").disabled = true;
+            document.getElementById("btn2").disabled = true;
+            document.getElementById("colorCircle").disabled = true;
+            document.getElementById("colorCircleTwo").disabled = true;
+
+        }
+
+        if(self._isRainbow) {
+            self._rainbowTim = setInterval(()=> {
+                self._rainbowDt += 0.1;
+            }, 100);
+        }
+        else {
+            clearInterval(self._rainbowTim);
+            self._rainbowTim = null;
+        }
     };
 };
 
@@ -176,7 +203,7 @@ Sample1.prototype.createCanvas = function(div){
             let opacity = k;
             let radius =  (this._radius * k + this._radiusTwo * (1 - k) );
             counter++;
-            let color = this.colorBlending(this.color, this.colorTwo, k);
+            let color = this.colorBlending(this.getColorOne(), this.getColorTwo(), k);
             this.drawCircle(ob.x, ob.y, radius, color, opacity);
         }
  };
@@ -231,6 +258,50 @@ Sample1.prototype.deleteCircleOnTim = function(t) {
    
      this.cleanCanvas(); 
      this.drawCircles();
+};
+
+Sample1.prototype.toHex = function(n) {
+    let hn = Math.round(n).toString(16);
+
+    if(hn.length < 2) {
+        return "0" + hn;
+    }
+
+    return hn;
+
+};
+
+Sample1.prototype.getRainbowCollor = function(k) {
+    let kpi = k % (3 * Math.PI / 2);
+    let kr1 = Math.max(Math.cos(kpi), 0);
+    let kg = Math.max(Math.cos(kpi - Math.PI / 2), 0);
+    let kb = Math.max(Math.cos(kpi - Math.PI), 0);
+    let kr2 = Math.max(Math.cos(kpi - 3 * Math.PI / 2), 0);
+
+    let color = "#" + this.toHex(kr1 * 255 + kr2 * 255) +  this.toHex(kg * 255) +  this.toHex(kb * 255);
+
+    return color;
+};
+
+Sample1.prototype.getColorOne = function() {
+
+   if(this._isRainbow) {
+    return this.getRainbowCollor(this._rainbowDt);
+   }
+   else {
+    return this.color;
+   }
+    
+};
+
+Sample1.prototype.getColorTwo = function() {
+
+    if(this._isRainbow) {
+        return this.getRainbowCollor(this._rainbowDt + Math.PI / 2);
+       }
+       else {
+        return this.color;
+       }
 };
 
     

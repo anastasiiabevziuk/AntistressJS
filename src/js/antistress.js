@@ -8,11 +8,22 @@ export function Antistress(){
 } 
 
 Antistress.prototype.addSample = function(sample) {
+    const self = this;
+
     if(this._currentSample == undefined) {
         this._currentSample = sample;
     }
-    
-    this._divMenu.appendChild(this._createButton(sample.getName()));
+    let button = this._createButton(sample.getName());
+
+
+    button.onclick = () => {
+        self._clean();
+        self._currentSample = sample;
+        sample.createCanvas(self._divCanvas);
+        sample.createMenu(self._divContainerMenu);
+    };
+    this._divMenu.appendChild(button);
+    //init();
     sample.createCanvas(this._divCanvas);
     sample.createMenu(this._divContainerMenu);
 };
@@ -28,3 +39,8 @@ Antistress.prototype._createButton = function(name) {
 Antistress.prototype.onResize = function(e) {
     this._currentSample.onResize(e);
 };
+
+Antistress.prototype._clean = function() {
+    this._divCanvas.innerHTML = '';
+    this._divContainerMenu.innerHTML = '';
+} 

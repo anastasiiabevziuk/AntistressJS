@@ -5,8 +5,8 @@ SampleBase.prototype.getName = function(){
     return this._name;
 };
 
-SampleBase.prototype.createCanvas = function() {};
-SampleBase.prototype.createMenu = function() {};
+SampleBase.prototype.createCanvas = function(div) {};
+SampleBase.prototype.createMenu = function(div) {};
 
 
 SampleBase.prototype.createButton = function(div, name, id){
@@ -61,4 +61,4 @@ SampleBase.prototype.colorBlending= function(colorOne, colorTwo, k) {
     return blendedColor;
 };
 
-//SampleBase.prototype.onResize = function() {};
+SampleBase.prototype.onResize = function() {};
