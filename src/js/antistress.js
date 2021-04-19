@@ -12,6 +12,8 @@ Antistress.prototype.addSample = function(sample) {
 
     if(this._currentSample == undefined) {
         this._currentSample = sample;
+        this._currentSample.createCanvas(this._divCanvas);
+        this._currentSample.createMenu(this._divContainerMenu);
     }
     let button = this._createButton(sample.getName());
 
@@ -25,8 +27,7 @@ Antistress.prototype.addSample = function(sample) {
     };
     this._divMenu.appendChild(button);
     //init();
-    sample.createCanvas(this._divCanvas);
-    sample.createMenu(this._divContainerMenu);
+    
 };
 
 Antistress.prototype._createButton = function(name) {
