@@ -1,14 +1,23 @@
 import {SampleBase} from './sampleBase.js';
+
+
 export function Sample1 (){
     SampleBase.call(this);
     this._name = "FIRST";
     this._queue = [];
-    this._delay = 10;
+    this._addCircleDelay = 5;
+    this._removeCircleDelay = 7;
+
     this._radius = 10;
     this._radiusTwo = 3;
+
     this._maxLength = 15;
+
     this.color = "#800080";
     this.colorTwo = "#ff00ff";
+
+    this._mouseX = null;
+    this._mouseY = null;
 
     this._currentDate = new Date();
 
@@ -210,19 +219,42 @@ Sample1.prototype.createCanvas = function(div){
 
  Sample1.prototype.initCanvasEvents = function(){
     this._canvas.onmousemove = e => this.onMouseMove(e);
+
+    setInterval(()=>{
+        this.addCircleOnTim();
+    }, this._addCircleDelay );
+
     setInterval(()=>{
         this._prevDate = this._currentDate;
         this._currentDate = new Date();
-        this.deleteCircleOnTim(this._currentDate - this._prevDate);
-    }, this._delay );
+        this.removeCircleOnTim(this._currentDate - this._prevDate);
+    }, this._removeCircleDelay );
+
+
+
+
+    ///TEST
+    setInterval(()=>{
+        if(this.testTime) {
+            console.log(this.testTime);
+        }
+        this.testTime = 0;
+    }, 1000 );
  };
 
  Sample1.prototype.onMouseMove = function(e){
+     this._mouseX = e.offsetX;
+     this._mouseY = e.offsetY;
+     /*
     //this._canvas.onmousemove = e => this.findCoordinates(e);
     this.cleanCanvas(); 
     //this.drawCircle(e.offsetX, e.offsetY, 10, 'pink');
     this.addCoordToQueue(e.offsetX, e.offsetY);
     this.drawCircles();
+    */
+
+    ///TEST
+    this.testTime++;
  };
 
  Sample1.prototype.onResize = function(e) {
@@ -245,8 +277,7 @@ Sample1.prototype.createCanvas = function(div){
     //this.createCircles();
 };
 
-Sample1.prototype.deleteCircleOnTim = function(t) {
-    let num = Math.round(t/this._delay);
+Sample1.prototype.removeCoordFromQueue =  function(num){
     if(this._queue.length > 1) {
         if(this._queue.length > num + 1) {
             this._queue.splice(0, num);
@@ -255,7 +286,20 @@ Sample1.prototype.deleteCircleOnTim = function(t) {
             this._queue.splice(0, this._queue.length - 1);
          } 
     }
-   
+};
+
+Sample1.prototype.addCircleOnTim = function() {
+    this.addCoordToQueue(this._mouseX, this._mouseY);
+    
+     this.cleanCanvas(); 
+     this.drawCircles();
+};
+
+Sample1.prototype.removeCircleOnTim = function(t) {
+    let num = Math.round(t/this._removeCircleDelay);
+
+    this.removeCoordFromQueue(num);
+    
      this.cleanCanvas(); 
      this.drawCircles();
 };
@@ -300,7 +344,7 @@ Sample1.prototype.getColorTwo = function() {
         return this.getRainbowCollor(this._rainbowDt + Math.PI / 2);
        }
        else {
-        return this.color;
+        return this.colorTwo;
        }
 };
 
